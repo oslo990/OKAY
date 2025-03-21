@@ -15,30 +15,28 @@ import cookieParser from 'cookie-parser';
 import nodemailer from 'nodemailer';
 import crypto from 'crypto';
 
-dotenv.config();
-
-const BASE_URL = process.env.BASE_URL || (process.env.NODE_ENV === "production" ? 'https://aws-jtos.onrender.com' : 'http://localhost:5001'); // Déclaration du BASE_URL
 
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+
+dotenv.config();
+
+
 const app = express();
 const prisma = new PrismaClient();
 
 
-async function connectToMongoDB() {
-    try {
-        await mongoose.connect(process.env.DATABASE_URL);
+// 📌 Connexion à MongoDB
+mongoose.connect(process.env.DATABASE_URL)
+    .then(() => {
         console.log("✅ Connecté à MongoDB");
-    } catch (err) {
+    })
+    .catch((err) => {
         console.error("❌ Erreur de connexion à MongoDB :", err);
-        process.exit(1);
-    }
-}
-
-// Appeler la fonction au démarrage
-connectToMongoDB();
+        process.exit(1); // Quitter proprement si la connexion échoue
+    });
 
 // 📌 Utiliser cookie-parser
 app.use(cookieParser());
@@ -340,8 +338,9 @@ const PORT = process.env.PORT || 5001;
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "accueil.html"));
 });
+app.listen(PORT, () => console.log(`🚀 Serveur en écoute sur http://localhost:${PORT}`));
 
-app.listen(PORT, () => console.log(`🚀 Serveur en écoute sur ${BASE_URL}`));
+
 
 app.get("/session-info", (req, res) => {
     if (req.session.message) {
@@ -713,7 +712,7 @@ console.log("📌 Expire à :", expirationTime);
         },
     });
 
-    const resetLink = `${BASE_URL}/reset-password?token=${token}`;
+    const resetLink = `http://localhost:5001/reset-password?token=${token}`;
 
     const mailOptions = {
         from: "FilmScope <no-reply@filmscope.com>",
@@ -723,7 +722,6 @@ console.log("📌 Expire à :", expirationTime);
         html: `<p>Cliquez ici pour réinitialiser votre mot de passe : <a href="${resetLink}">${resetLink}</a></p>`,
     };
 
-    
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
             console.error("❌ Erreur d'envoi d'email :", error);
