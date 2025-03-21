@@ -87,7 +87,7 @@ app.use(async (req, res, next) => {
 
 // 📌 Middleware
 app.use(express.json());
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, "public")));
 
 
 // 📌 Middleware pour rediriger les utilisateurs authentifiés
