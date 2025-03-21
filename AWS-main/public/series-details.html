@@ -1,0 +1,213 @@
+Conversation opened. 1 unread message.
+
+Skip to content
+Using Gmail with screen readers
+Enable desktop notifications for Gmail.
+OK No, thanks
+1 of 2,729
+series details
+Inbox
+Feriel AITLARBI <if_aitlarbi@esi.dz>
+    Attachments
+    23:44 (11 minutes ago)
+    to me
+
+    Be careful with this message.
+    This message contains one or more attachments that cannot be verified as safe. Avoid downloading them unless you
+    know the sender and are confident that this email is legitimate.
+
+    Report spamLooks safe
+
+
+
+    One attachment
+    • Scanned by Gmail
+    Downloading this attachment is disabled. If you want to download it and you trust this message, click 'Looks safe'
+    in the banner above.
+    <!DOCTYPE html>
+    <html lang="fr">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Détails de la Série</title>
+        <link rel="stylesheet" href="style.css">
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 20px;
+                background-color: #f5f5f5;
+            }
+
+            .container {
+                max-width: 800px;
+                margin: auto;
+                background: white;
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            }
+
+            .serie-header {
+                text-align: center;
+            }
+
+            .serie-header img {
+                width: 100%;
+                max-height: 400px;
+                object-fit: cover;
+                border-radius: 10px;
+            }
+
+            .buttons-container {
+                display: flex;
+                justify-content: center;
+                gap: 10px;
+                margin-top: 20px;
+            }
+
+            .button {
+                padding: 10px 20px;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 16px;
+            }
+
+            .watchlist-button {
+                background-color: #3498db;
+                color: white;
+            }
+
+            .favoris-button {
+                background-color: #e74c3c;
+                color: white;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="watchlist-navigation">
+            <a href="watchlistSeries.html" class="watchlist-button">Voir ma Watchlist de Séries</a>
+            <a href="favorisSeries.html" class="favoris-button">Voir mes Favoris</a>
+        </div>
+        <nav>
+            <a href="series.html">⬅ Retour aux Séries</a>
+        </nav>
+
+        <div class="container">
+            <div id="serieDetails">
+                <p>Chargement des détails...</p>
+            </div>
+        </div>
+
+        <div class="serie-header">
+            <h1 id="serieTitle"></h1>
+            <img src="" id="serieImage" alt="Image de la série">
+        </div>
+        <p><strong>Date de première diffusion :</strong> <span id="releaseDate"></span></p>
+        <p><strong>Note :</strong> <span id="serieRating"></span></p>
+        <p><strong>Description :</strong> <span id="serieDescription"></span></p>
+
+        <!-- Boutons -->
+        <div class="buttons-container">
+            <button class="button watchlist-button" id="addToWatchlistButton">Ajouter à la watchlist</button>
+            <button class="button favoris-button" id="addToFavorisButton">Ajouter aux favoris</button>
+        </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", async function () {
+                const API_KEY = "4a7fa7389e9a4ceeef5a953ff90232df";
+                const urlParams = new URLSearchParams(window.location.search);
+                const serieId = urlParams.get("id");
+
+                if (!serieId) {
+                    document.getElementById("serieDetails").innerHTML = "<p>Erreur : aucune série sélectionnée.</p>";
+                    return;
+                }
+
+                try {
+                    // Récupérer les détails de la série
+                    const response = await fetch(`https://api.themoviedb.org/3/tv/${serieId}?api_key=${API_KEY}&language=fr-FR`);
+                    const serie = await response.json();
+
+                    // Afficher les détails de la série
+                    document.getElementById("serieTitle").textContent = serie.name;
+                    document.getElementById("serieImage").src = serie.poster_path
+                        ? `https://image.tmdb.org/t/p/w500${serie.poster_path}`
+                        : "https://via.placeholder.com/500x750?text=Pas+d'image";
+                    document.getElementById("releaseDate").textContent = serie.first_air_date || "Inconnue";
+                    document.getElementById("serieRating").textContent = `${serie.vote_average} (${serie.vote_count} votes)`;
+                    document.getElementById("serieDescription").textContent = serie.overview || "Pas de description disponible.";
+
+                    // Ajouter la série à la watchlist
+                    document.getElementById("addToWatchlistButton").addEventListener("click", async () => {
+                        try {
+                            const response = await fetch("/watchlistSeries", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify({
+                                    seriesId: serieId,
+                                    title: serie.name,
+                                    imageUrl: serie.poster_path
+                                        ? `https://image.tmdb.org/t/p/w500${serie.poster_path}`
+                                        : "",
+                                    releaseDate: serie.first_air_date,
+                                    rating: serie.vote_average,
+                                }),
+                            });
+
+                            if (response.ok) {
+                                alert("Série ajoutée à la watchlist !");
+                            } else {
+                                const errorData = await response.json();
+                                alert(`Erreur : ${errorData.message}`);
+                            }
+                        } catch (error) {
+                            console.error("Erreur lors de l'ajout à la watchlist :", error);
+                            alert("Erreur lors de l'ajout à la watchlist.");
+                        }
+                    });
+
+                    // Ajouter la série aux favoris
+                    document.getElementById("addToFavorisButton").addEventListener("click", async () => {
+                        try {
+                            const response = await fetch("/favorisSeries", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify({
+                                    seriesId: serieId,
+                                    title: serie.name,
+                                    imageUrl: serie.poster_path
+                                        ? `https://image.tmdb.org/t/p/w500${serie.poster_path}`
+                                        : "",
+                                    releaseDate: serie.first_air_date,
+                                    rating: serie.vote_average,
+                                }),
+                            });
+
+                            if (response.ok) {
+                                alert("Série ajoutée aux favoris !");
+                            } else {
+                                const errorData = await response.json();
+                                alert(`Erreur : ${errorData.message}`);
+                            }
+                        } catch (error) {
+                            console.error("Erreur lors de l'ajout aux favoris :", error);
+                            alert("Erreur lors de l'ajout aux favoris.");
+                        }
+                    });
+
+                } catch (error) {
+                    document.getElementById("serieDetails").innerHTML = "<p>Erreur lors du chargement des détails de la série.</p>";
+                }
+            });
+        </script>
+    </body>
+
+    </html>

@@ -1,0 +1,569 @@
+*{ 
+    margin: 0;
+    padding: 0;
+    font-family:'Segoe UI', sans-serif;
+    box-sizing: border-box;
+}
+
+body{
+    background: #000;
+    color: aliceblue;
+
+}
+.header {
+    width: 100%;
+    height: 100vh;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(images/bzf.jpg);
+    background-size: cover;
+    background-position: center;
+    padding: 10px 8%;
+    position: relative;
+}
+
+
+nav{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+}
+
+.logo{
+
+    width: 150px;
+    cursor: pointer;
+}
+
+nav button{
+    border: 0;
+    outline: 0;
+    background:#db0001 ;
+    color: #fff;
+    padding: 7px 20px;
+    font-size: 12px;
+    border-radius: 4px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.language-btn{
+
+    display: inline-flex;
+    align-items: center;
+    background: transparent;
+    border: 1px solid #fff;
+    padding: 7px 10px;
+}
+.language-btn img{
+    width: 10px;
+    margin-left: 10px;
+}
+.header-content{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    text-align: center;
+    margin-top: 100px;
+
+}
+.header-content h1{
+    font-size: 60px;
+    line-height: 70px;
+    font-weight: 600;
+    max-width: 700px;  
+}
+.header-content h3{
+    font-weight: 400;
+    margin-bottom: 20px;
+}
+.email-signup{
+    background: #fff;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    margin-top: 30px;
+    overflow: hidden;
+}
+
+.email-signup input{
+    flex: 1;
+    border: 0;
+    outline: 0;
+    margin-left: 20px;
+}
+
+.email-signup button{
+    background: #db0001;
+    border: 0;
+outline: 0;   
+color: #fff;
+cursor: pointer;
+font-size: 16px;
+padding: 15px 30px;
+}
+
+
+.features{
+    padding: 50px 12%;
+    font-size: 22px;
+}
+
+.row {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 50px 0;
+
+}
+.text-col{
+    flex-basis: 50%;
+    margin-bottom: 20px;
+
+}
+
+.img-col{
+    flex-basis: 50%;
+    margin-bottom: 20px;
+
+}
+
+.img-col img{
+    display: block;
+    width: 90%;
+    margin: auto;
+   
+
+}
+
+.features h2{
+    font-size: 50px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.faq {
+    padding: 10px 12%;
+    text-align:center;
+    font-size: 18px;
+}
+
+.faq h2{
+    font-weight: 500;
+    font-size: 40px;
+}
+
+.accordion{
+margin: 60px auto;
+width: 100%;
+max-width: 750px;
+}
+.accordion li{
+
+   
+    list-style: none;
+    width: 100%;
+    padding: 20px;
+}
+.accordion li label{
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    font-size: 18px;
+    font-weight: 500;
+    background: #db0001;
+    margin-bottom: 2px;
+    cursor: pointer;
+    position: relative;
+}
+
+label::after{
+    content: '+';
+    font-size: 34px;
+    position: absolute;
+    right: 20px;
+    transition: transform 0.5s;
+}
+
+input[type="radio"]{
+    display: none;
+}
+.accordion .header-content{
+    background:#303030;
+    text-align: left;
+    padding : 0 20px;
+    max-height: 0;
+    overflow:hidden;
+    transition :max-height 0.5s ,padding 0.5s;
+}
+
+.accordion input[type="radio"]:checked +label+.content{
+    max-height: 600px;
+    padding: 30px 20px;
+}
+.accordion input[type="radio"]:checked +label::after{
+    transform: rotate(135 deg);}
+
+    .faq .email-signup{
+        max-width: 600px;
+        margin: 20px auto 60px;
+    }
+    .faq small{
+        font-size: 13px;
+    }
+
+
+
+
+    .footer {
+        padding: 50px 15% 10px;
+        border-top: 6px solid #333;
+        color: #777;
+      }
+      
+      .footer h2 {
+        font-size: 18px;
+        font-weight: 400;
+        margin-bottom: 30px;
+      }
+      
+      .footer .col {
+        flex-basis: 25%;
+        flex-grow: 1;
+        margin-bottom: 20px;
+      }
+      
+      .footer .col a {
+        display: block;
+        text-decoration: none;
+        color: #777;
+        font-size: 14px;
+        margin-bottom: 10px;
+      }
+      
+      .footer .row {
+        align-items: flex-start;
+        padding: 10px 0;
+      }
+      
+      .footer .language-btn {
+        color: #fff;
+        padding: 10px 20px;
+        border-radius: 3px;
+      }
+
+      .copyright-txt {
+        font-size: 14px;
+        margin-top: 20px;
+        margin-bottom: 10px;
+      }
+      
+      @media only screen and (max-width: 600px) {
+           .logo {
+          width: 100px;
+        }
+      
+         nav button {
+             padding: 5px 10px;
+        }
+
+
+        nav .language-btn{
+            padding: 4px 8px;
+        }
+
+
+        .header-content{
+            position: unset;
+            transform: none;
+            padding-top: 150px;
+        }
+        .header-content h1 {
+            font-size: 30px;
+        }
+
+        .email-signup button {font-size: 12px;
+        
+        padding: 10px 15px;
+    }
+
+    .text-col,.img-col{
+        flex-basis: 100%;
+    }
+
+    .features h2 {
+        font: size 30px;
+    }
+
+    .features p{
+        font-size: 15px;
+    }
+
+    .row:nth-child(2),
+    .row:nth-child(4) {
+      flex-direction: column-reverse;
+    }
+    
+    .features .row {
+      padding: 10px 0;
+    }
+    
+    .faq h2 {
+      font-size: 20px;
+    }
+    
+    .accordion .content {
+      font-size: 14px;
+    }
+    
+    .accordion li label {
+      padding: 10px;
+      font-size: 14px;
+    }
+label::after{
+    font-size: 22px;
+}    
+
+
+
+      }
+
+
+/* Style de la barre de recherche */   
+.search-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.search-bar input[type="text"] {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 300px;
+    font-size: 16px;
+}
+
+.search-bar button {
+    padding: 10px 20px;
+    background-color: #e50914;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    margin-left: 10px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.search-bar button:hover {
+    background-color: #f40612;
+}
+
+.top-bar {
+    display: flex;
+    justify-content: center;
+    background-color: transparent;
+    padding: 10px;
+}
+
+.top-btn {
+    padding: 10px 20px;
+    background-color: #555;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    margin: 0 10px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.top-btn:hover {
+    background-color: #777;
+}
+
+/* sidebar's style */
+body {
+    font-family: "Lato", sans-serif;
+  }
+  
+ /* Modern and professional style for the sidebar */
+.sidenav {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #1a1a1a; /* Darker background for a modern look */
+    overflow-x: hidden;
+    transition: width 0.3s ease; /* Smooth transition for opening and closing */
+    padding-top: 60px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5); /* Subtle shadow for depth */
+}
+
+.sidenav a {
+    padding: 15px 25px; /* Adjusted padding for better spacing */
+    text-decoration: none;
+    font-size: 18px; /* Slightly smaller font size for a cleaner look */
+    color: #b8b8b8; /* Softer text color */
+    display: block;
+    transition: color 0.3s ease, background-color 0.3s ease; /* Smooth transition for hover effects */
+    border-radius: 4px; /* Rounded corners for links */
+    margin: 5px 0; /* Spacing between links */
+}
+
+.sidenav a:hover {
+    color: #ffffff; /* White text on hover */
+    background-color: #333333; /* Darker background on hover */
+}
+
+.sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+    color: #b8b8b8; /* Softer color for the close button */
+    transition: color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.sidenav .closebtn:hover {
+    color: #ffffff; /* White color on hover */
+}
+  
+  @media screen and (max-height: 450px) {
+    .sidenav {padding-top: 15px;}
+    .sidenav a {font-size: 18px;}
+  }
+  /*user button */
+  /* Dropdown Button */
+.dropbtn {
+ /*  background-color: #a71d0b;
+  color: white;
+  /* padding: 20px; 
+  width : 100px;
+  height : 35px;
+  font-size: 16px;
+  border: none; */
+  display: inline-flex;
+    align-items: center;
+    background-color: #a71d0b;
+    border: 1px solid #fff;
+    padding: 7px 20px;
+}
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {background-color: #ddd;}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {display: block;}
+
+/* Change the background color of the dropdown button when the dropdown content is shown */
+.dropdown:hover .dropbtn {background-color: #774035;}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    background: linear-gradient(#000000, #1a0000);
+    font-family: 'Arial', sans-serif;
+}
+
+.menu::-webkit-scrollbar {
+    display: none;
+}
+
+.menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 85px;
+    height: 100%;
+    transition: width 0.3s ease-in-out;
+    scrollbar-width: none;
+    overflow: hidden scroll;
+    background: rgba(0, 0, 0, 0.8);
+    -ms-overflow-style: none;
+    padding: 20px 20px 20px 0;
+    backdrop-filter: blur(10px);
+    box-shadow: 8px 0px 12px rgba(255, 0, 0, 0.3);
+}
+
+.menu:hover {
+    width: 260px;
+}
+
+.menu:hover li span:nth-child(2) {
+    display: block;
+}
+
+.menu-content li {
+    list-style: none;
+    border-radius: 0px 50px 50px 0;
+    transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
+    margin-bottom: 20px;
+    padding-left: 20px;
+}
+
+.menu-content li:hover {
+    background: rgba(255, 0, 0, 0.7);
+    transform: scale(1.05);
+}
+
+.menu-content li span:nth-child(2) {
+    display: none;
+}
+
+a {
+    text-decoration: none;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.material-symbols-outlined {
+    padding: 12px;
+    font-size: 25px;
+    margin-right: 10px;
+    border-radius: 50%;
+    background: #b00000;
+    color: white;
+    transition: background 0.3s ease-in-out;
+}
+
+.menu-content li:hover .material-symbols-outlined {
+    background: #ffffff;
+    color: #b00000;
+}
