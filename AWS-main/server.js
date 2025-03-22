@@ -19,7 +19,7 @@ import cors from 'cors';
 
 
 const corsOptions = {
-    origin: "https://final-q571ehgsl-cissous-projects.vercel.app", // URL de ton frontend sur Vercel
+    origin: "https://final-aws-g3d6.vercel.app", // URL de ton frontend sur Vercel
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true, // Permet d'envoyer des cookies avec les requêtes
