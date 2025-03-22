@@ -279,6 +279,24 @@ app.get("/profile", (req, res) => {
 });
 
 
+app.get("/logout", (req, res) => {
+    req.logout((err) => {
+        if (err) {
+            console.error("Erreur lors de la déconnexion :", err);
+            return res.status(500).json({ message: "Erreur de déconnexion" });
+        }
+        req.session.destroy((err) => {
+            if (err) {
+                console.error(" Erreur lors de la destruction de la session :", err);
+                return res.status(500).json({ message: "Erreur de destruction de la session" });
+            }
+            res.redirect("/login");
+        });
+    });
+});
+
+
+
 
 
 
