@@ -712,7 +712,9 @@ console.log("📌 Expire à :", expirationTime);
         },
     });
 
-    const resetLink = `http://localhost:5001/reset-password?token=${token}`;
+    const BASE_URL = process.env.BASE_URL || `http://localhost:5001`;
+    const resetLink = `${BASE_URL}/reset-password?token=${token}`;
+    
 
     const mailOptions = {
         from: "FilmScope <no-reply@filmscope.com>",

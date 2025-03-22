@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;1,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/style2.css">
     <script>
-        const BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:5001' : 'https://aws-jtos.onrender.com';
+        const BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:5001' : 'https://final-aws-ipff.vercel.app';
     </script>
 </head>
 <body>
@@ -47,20 +47,25 @@
                 return;
             }
 
-            // Envoie des données au serveur avec BASE_URL
-            const response = await fetch(`${BASE_URL}/register`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, email, password }),
-            });
+            try {
+                const response = await fetch(`${BASE_URL}/register`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "include", // Gérer les sessions si nécessaire
+                    body: JSON.stringify({ name, email, password }),
+                });
 
-            const data = await response.json();
+                const data = await response.json();
 
-            if (response.ok) {
-                alert("Inscription réussie !");
-                window.location.href = "login.html"; // Redirection après inscription
-            } else {
-                alert(data.message);
+                if (response.ok) {
+                    alert("Inscription réussie !");
+                    window.location.href = "login.html"; // Redirection après inscription
+                } else {
+                    alert(data.message);
+                }
+            } catch (error) {
+                console.error("Erreur:", error);
+                alert("Une erreur est survenue. Veuillez réessayer.");
             }
         });
     </script>
