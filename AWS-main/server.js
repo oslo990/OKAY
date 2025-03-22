@@ -17,6 +17,7 @@ import crypto from 'crypto';
 import cors from 'cors';
 
 
+app.use(cors(corsOptions)); // Applique la configuration CORS à toutes les routes
 
 const corsOptions = {
     origin: "https://final-aws-g3d6.vercel.app", // URL de ton frontend sur Vercel
@@ -38,7 +39,6 @@ dotenv.config();
 const app = express();
 const prisma = new PrismaClient();
 
-app.use(cors(corsOptions)); // Applique la configuration CORS à toutes les routes
 
 
 
