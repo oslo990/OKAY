@@ -345,11 +345,10 @@ const PORT = process.env.PORT || 5001;
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "accueil.html"));
 });
-pp.listen(PORT, () => {
-  // Sur Vercel, il n'est pas nécessaire de spécifier une URL complète, le port est géré automatiquement.
-  console.log(`🚀 Serveur en écoute sur le port ${PORT}`);
-});
-
+app.listen(PORT, () => {
+    // Sur Vercel, il n'est pas nécessaire de spécifier une URL complète, le port est géré automatiquement.
+    console.log(`🚀 Serveur en écoute sur le port ${PORT}`);
+  });
 
 
 app.get("/session-info", (req, res) => {
