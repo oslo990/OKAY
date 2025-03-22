@@ -284,10 +284,11 @@ app.get("/profile", (req, res) => {
 
 //  Middleware pour vérifier si l'utilisateur est authentifié
 const ensureAuthenticated = (req, res, next) => {
-    if (req.isAuthenticated()) {
+    if (req.isAuthenticated() && req.user) {
         return next();
     }
-    res.redirect("/login");
+    console.log("❌ Utilisateur non authentifié ou session invalide.");
+    res.redirect('/clear-session'); // Redirige pour détruire la session et revenir à la page de connexion
 };
 
 
