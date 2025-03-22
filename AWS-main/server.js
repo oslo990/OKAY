@@ -284,13 +284,11 @@ app.get("/profile", (req, res) => {
 
 //  Middleware pour vérifier si l'utilisateur est authentifié
 const ensureAuthenticated = (req, res, next) => {
-    if (req.isAuthenticated() && req.user) {
+    if (req.isAuthenticated()) {
         return next();
     }
-    console.log("❌ Utilisateur non authentifié ou session invalide.");
-    res.redirect('/clear-session'); // Redirige pour détruire la session et revenir à la page de connexion
+    res.redirect("/login");
 };
-
 
 //  Route protégée (Exemple: Liste des films)
 app.get("/movies", ensureAuthenticated, async (req, res) => {
