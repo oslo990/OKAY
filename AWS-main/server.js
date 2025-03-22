@@ -176,7 +176,6 @@ passport.deserializeUser(async (id, done) => {
 });
 
 
-
 // 📌 Routes de gestion des pages HTML
 app.get("/login", redirectIfAuthenticated, (req, res) => res.sendFile(path.join(__dirname, "public", "login.html")));
 app.get("/accueil", (req, res) => res.sendFile(path.join(__dirname, "public", "accueil.html")));
@@ -280,21 +279,7 @@ app.get("/profile", (req, res) => {
 });
 
 
-app.get("/logout", (req, res) => {
-    req.logout((err) => {
-        if (err) {
-            console.error("Erreur lors de la déconnexion :", err);
-            return res.status(500).json({ message: "Erreur de déconnexion" });
-        }
-        req.session.destroy((err) => {
-            if (err) {
-                console.error(" Erreur lors de la destruction de la session :", err);
-                return res.status(500).json({ message: "Erreur de destruction de la session" });
-            }
-            res.redirect("/login");
-        });
-    });
-});
+
 
 
 //  Middleware pour vérifier si l'utilisateur est authentifié
@@ -344,9 +329,9 @@ app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "accueil.html"));
 });
 pp.listen(PORT, () => {
-    // Sur Vercel, il n'est pas nécessaire de spécifier une URL complète, le port est géré automatiquement.
-    console.log(`🚀 Serveur en écoute sur le port ${PORT}`);
-  });
+  // Sur Vercel, il n'est pas nécessaire de spécifier une URL complète, le port est géré automatiquement.
+  console.log(`🚀 Serveur en écoute sur le port ${PORT}`);
+});
 
 
 
