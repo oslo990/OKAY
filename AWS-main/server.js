@@ -14,7 +14,6 @@ import cookieParser from 'cookie-parser';
 
 import nodemailer from 'nodemailer';
 import crypto from 'crypto';
-import cors from 'cors';
 
 
 
