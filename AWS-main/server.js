@@ -59,7 +59,7 @@ app.use(session({
     cookie: {
         secure: process.env.NODE_ENV === "production", // Active "secure" seulement en production
         httpOnly: true, // Protège contre les attaques XSS
-        sameSite: "strict", // Empêche CSRF
+        sameSite: "lax", // Empêche CSRF
         maxAge: 14 * 24 * 60 * 60 * 1000 // 14 jours
     }
 }));
@@ -258,6 +258,8 @@ app.post("/login", async (req, res) => { //req.login(user)
 
 
             req.session.message = `Bienvenue ${user.name} !`; // 🔹 Ajoute un message en session
+            console.log("Message dans la session après ajout :", req.session.message);
+
 
 
 
@@ -334,10 +336,15 @@ app.get("/auth/google/callback",
 //  Route pour obtenir les informations de l'utilisateur actuel
 app.get("/api/current", (req, res) => {
     if (!req.isAuthenticated()) {
+        console.log("L'utilisateur n'est pas authentifié.");
         return res.status(401).json({ message: "Non authentifié" });
     }
+    console.log("Utilisateur authentifié :", req.user);
+    console.log("Message dans la session :", req.session.message); // Vérifie si le message est présent dans la session
+
     res.json(req.user);
 });
+
 
 
 // Démarrer le serveur
