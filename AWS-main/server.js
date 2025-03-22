@@ -78,19 +78,12 @@ app.use((req, res, next) => {
 // 📌 Middleware pour associer la session à l'utilisateur
 app.use(async (req, res, next) => {
     if (req.user) {
-        console.log("Utilisateur connecté :", req.user);
-
         const sessionExists = await mongoose.connection.db.collection('sessions').findOne({ "session.userId": req.user.id });
 
 
         if (!sessionExists) {
             req.session.userId = req.user.id; // 🔹 Associe la session à l'utilisateur
-            console.log("Session associée à l'utilisateur :", req.user.id);
-
         }
-    } else {
-        console.log("Aucun utilisateur connecté.");
-    
     }
     next();
 });
@@ -182,18 +175,6 @@ passport.deserializeUser(async (id, done) => {
     }
 });
 
-
-app.get('/clear-session', (req, res) => {
-    req.session.destroy((err) => {
-        if (err) {
-            console.error("❌ Erreur lors de la destruction de la session :", err);
-            return res.status(500).json({ message: "Erreur lors de la destruction de la session." });
-        }
-        res.clearCookie('connect.sid'); // Supprime le cookie de session
-        console.log("✅ Session détruite avec succès.");
-        res.redirect('/login'); // Redirige vers la page de connexion
-    });
-});
 
 
 // 📌 Routes de gestion des pages HTML
@@ -318,11 +299,10 @@ app.get("/logout", (req, res) => {
 
 //  Middleware pour vérifier si l'utilisateur est authentifié
 const ensureAuthenticated = (req, res, next) => {
-    if (req.isAuthenticated() && req.user) {
+    if (req.isAuthenticated()) {
         return next();
     }
-    console.log("❌ Utilisateur non authentifié ou session invalide.");
-    res.redirect('/clear-session'); // Redirige pour détruire la session et revenir à la page de connexion
+    res.redirect("/login");
 };
 
 
@@ -347,12 +327,6 @@ app.get("/auth/google/callback",
         res.redirect("/accueil_after_login.html");
     }
 );
-
-app.get("/test-session", (req, res) => {
-    console.log("📌 Vérification de session après connexion Google:", req.session);
-    console.log("📌 Utilisateur:", req.user);
-    res.json({ session: req.session, user: req.user });
-});
 
 
 //  Route pour obtenir les informations de l'utilisateur actuel
