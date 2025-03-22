@@ -176,6 +176,19 @@ passport.deserializeUser(async (id, done) => {
 });
 
 
+app.get('/clear-session', (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            console.error("❌ Erreur lors de la destruction de la session :", err);
+            return res.status(500).json({ message: "Erreur lors de la destruction de la session." });
+        }
+        res.clearCookie('connect.sid'); // Supprime le cookie de session
+        console.log("✅ Session détruite avec succès.");
+        res.redirect('/login'); // Redirige vers la page de connexion
+    });
+});
+
+
 // 📌 Routes de gestion des pages HTML
 app.get("/login", redirectIfAuthenticated, (req, res) => res.sendFile(path.join(__dirname, "public", "login.html")));
 app.get("/accueil", (req, res) => res.sendFile(path.join(__dirname, "public", "accueil.html")));
@@ -298,10 +311,11 @@ app.get("/logout", (req, res) => {
 
 //  Middleware pour vérifier si l'utilisateur est authentifié
 const ensureAuthenticated = (req, res, next) => {
-    if (req.isAuthenticated()) {
+    if (req.isAuthenticated() && req.user) {
         return next();
     }
-    res.redirect("/login");
+    console.log("❌ Utilisateur non authentifié ou session invalide.");
+    res.redirect('/clear-session'); // Redirige pour détruire la session et revenir à la page de connexion
 };
 
 
@@ -327,6 +341,12 @@ app.get("/auth/google/callback",
     }
 );
 
+app.get("/test-session", (req, res) => {
+    console.log("📌 Vérification de session après connexion Google:", req.session);
+    console.log("📌 Utilisateur:", req.user);
+    res.json({ session: req.session, user: req.user });
+});
+
 
 //  Route pour obtenir les informations de l'utilisateur actuel
 app.get("/api/current", (req, res) => {
@@ -342,7 +362,10 @@ const PORT = process.env.PORT || 5001;
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "accueil.html"));
 });
-app.listen(PORT, () => console.log(`🚀 Serveur en écoute sur http://localhost:${PORT}`));
+pp.listen(PORT, () => {
+    // Sur Vercel, il n'est pas nécessaire de spécifier une URL complète, le port est géré automatiquement.
+    console.log(`🚀 Serveur en écoute sur le port ${PORT}`);
+  });
 
 
 
