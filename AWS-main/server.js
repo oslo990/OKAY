@@ -78,12 +78,19 @@ app.use((req, res, next) => {
 // 📌 Middleware pour associer la session à l'utilisateur
 app.use(async (req, res, next) => {
     if (req.user) {
+        console.log("Utilisateur connecté :", req.user);
+
         const sessionExists = await mongoose.connection.db.collection('sessions').findOne({ "session.userId": req.user.id });
 
 
         if (!sessionExists) {
             req.session.userId = req.user.id; // 🔹 Associe la session à l'utilisateur
+            console.log("Session associée à l'utilisateur :", req.user.id);
+
         }
+    } else {
+        console.log("Aucun utilisateur connecté.");
+    
     }
     next();
 });
