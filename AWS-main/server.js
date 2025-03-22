@@ -14,6 +14,17 @@ import cookieParser from 'cookie-parser';
 
 import nodemailer from 'nodemailer';
 import crypto from 'crypto';
+import cors from 'cors';
+
+
+
+const corsOptions = {
+    origin: "https://final-q571ehgsl-cissous-projects.vercel.app", // URL de ton frontend sur Vercel
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true, // Permet d'envoyer des cookies avec les requêtes
+  };
+  
 
 
 
@@ -26,6 +37,9 @@ dotenv.config();
 
 const app = express();
 const prisma = new PrismaClient();
+
+app.use(cors(corsOptions)); // Applique la configuration CORS à toutes les routes
+
 
 
 // 📌 Connexion à MongoDB
