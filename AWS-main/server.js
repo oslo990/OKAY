@@ -14,9 +14,18 @@ import cookieParser from 'cookie-parser';
 
 import nodemailer from 'nodemailer';
 import crypto from 'crypto';
+import cors from 'cors';
 
 
+app.use(cors(corsOptions)); // Applique la configuration CORS à toutes les routes
 
+const corsOptions = {
+    origin: "https://final-aws-g3d6.vercel.app", // URL de ton frontend sur Vercel
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true, // Permet d'envoyer des cookies avec les requêtes
+  };
+  
 
 
 
