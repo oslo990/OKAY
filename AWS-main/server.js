@@ -183,7 +183,7 @@ app.get("/register", (req, res) => res.sendFile(path.join(__dirname, "public", "
 
 
 // 📌 Routes d'inscription et de connexion
-app.post("/register", async (req, res) => {
+pp.post("/register", async (req, res) => {
     const { name, email, password } = req.body;
 
 
