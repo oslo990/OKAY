@@ -57,7 +57,7 @@ app.use(session({
         ttl: 14 * 24 * 60 * 60 // 14 jours
     }),
     cookie: {
-        secure: process.env.NODE_ENV === "production", // Active "secure" seulement en production
+        secure: false, // Active "secure" seulement en production
         httpOnly: true, // Protège contre les attaques XSS
         sameSite: "lax", // Empêche CSRF
         maxAge: 14 * 24 * 60 * 60 * 1000 // 14 jours
