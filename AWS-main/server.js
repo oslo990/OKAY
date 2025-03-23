@@ -230,9 +230,7 @@ app.post("/login", async (req, res) => { //req.login(user)
         return res.status(400).json({ message: "Email ou mot de passe incorrect." });
     }
 
-    const { hashedPassword, ...userWithoutPassword } = user;
 
-res.status(200).json(userWithoutPassword);
 
 
     // Vérifiez si l'utilisateur a déjà une session existante
