@@ -10,6 +10,378 @@
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Heebo', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #121212;
+            color: #ffffff;
+        }
+
+        nav {
+            background-color: transparent;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 50px;
+            position: absolute;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 10;
+        }
+
+        nav a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+            transition: color 0.3s;
+            padding: 10px 15px;
+            border-radius: 5px;
+        }
+
+        nav a:hover {
+            color: #ff0000;
+            background-color: #333333;
+        }
+
+        .search-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .search-container input[type="text"] {
+            display: none;
+            width: 200px;
+            padding: 5px;
+            border: none;
+            border-radius: 5px;
+            margin-left: 10px;
+            background: #fff;
+            color: #000;
+        }
+
+        .search-container img {
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+        }
+
+        .serie-header {
+            position: relative;
+            text-align: left;
+            color: white;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .serie-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('');
+            background-size: cover;
+            background-position: center;
+            filter: blur(10px);
+            opacity: 0.8;
+            z-index: -1;
+        }
+
+        .serie-header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 1000%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(0, 0, 0, 0.482), rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0));
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            z-index: 1;
+        }
+
+        .serie-info {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            max-width: 600px;
+            text-align: left;
+            z-index: 2;
+        }
+
+        .serie-info h1 {
+            font-size: 3.3em;
+            margin: 0 0 10px;
+            color: #FFFFFF;
+            text-shadow: 2px 2px 20px rgb(255, 255, 255);
+        }
+
+        .serie-info p {
+            font-size: 1.2em;
+            margin: 10px 0;
+        }
+
+        .serie-info strong {
+            color: #ff0000;
+        }
+
+        .trailer-button {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #ff0000;
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            transition: background-color 0.3s;
+        }
+
+        .trailer-button:hover {
+            background-color: #cc0000;
+        }
+
+        .actors-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .actor {
+            text-align: center;
+            width: 80px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .actor img {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #ffffff;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .actor:hover img {
+            transform: scale(1.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .actor p {
+            margin-top: 5px;
+            font-size: 0.9em;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .trailer-container {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .trailer-container iframe {
+            width: 100%;
+            height: 500px;
+            border: none;
+            border-radius: 10px;
+        }
+
+        .serie-description {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            font-size: 1.2em;
+            line-height: 1.6;
+            color: #bbbbbb;
+        }
+
+        .serie-description strong {
+            color: #ff0000;
+        }
+
+        .nav-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5em;
+            color: #ffffff;
+            background-color: rgba(72, 69, 69, 0.696);
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.9s;
+            z-index: 2;
+            padding: 10px;
+        }
+
+        .nav-arrow:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .nav-arrow.left {
+            left: 10px;
+        }
+
+        .nav-arrow.right {
+            right: 10px;
+        }
+
+        .related-series {
+    margin: 40px 0;
+}
+
+.related-series h2 {
+    font-size: 2em;
+    margin: 20px 0;
+    text-align: left;
+}
+
+.related-series .series-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start; 
+    gap: 20px 20px;
+    margin-left: 20px !important; /* Ajout d'une marge à gauche */
+    margin-right: 20px !important;
+}
+
+.related-series .serie {
+    width: 150px;
+    transition: transform 0.3s, box-shadow 0.3s;
+    background-color: transparent;
+    overflow: visible;
+}
+
+.related-series .serie img {
+    width: 100%;
+    border-radius: 10px;
+    object-fit: cover;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.related-series .serie:hover img {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.related-series .serie p {
+    margin-top: 5px;
+    font-size: 1.1em;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    color: #ffffff;
+    transition: color 0.3s ease, transform 0.3s ease;
+    padding: 0;
+}
+
+.related-series .serie p:hover {
+    color: #ff0000;
+    transform: scale(1.05);
+}
+
+.related-series .serie p a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.related-series .serie p a:hover {
+    color: #ff0000;
+}
+
+        .series-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .serie {
+            width: 180px;
+            background-color: #1e1e1e;
+            border-radius: 5px;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+
+        .serie:hover {
+            transform: scale(1.05);
+        }
+
+        .serie img {
+            width: 100%;
+            border-radius: 5px 5px 0 0;
+        }
+
+        .serie p {
+            padding: 10px;
+            margin: 0;
+            font-size: 0.9em;
+            text-align: center;
+        }
+
+        /* Style pour les carrés de notation */
+        .squares-outer {
+            display: inline-block;
+            position: relative;
+            font-family: Arial, sans-serif;
+        }
+
+        .squares-outer::before {
+            content: "■ ■ ■ ■ ■";
+            color: #ccc;
+        }
+
+        .squares-inner {
+            position: absolute;
+            top: 0;
+            left: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            width: 0;
+            color: #ff0000;
+        }
+
+        .squares-inner::before {
+            content: "■ ■ ■ ■ ■";
+        }
+
+        /* Style pour l'image supplémentaire */
+        .additional-image {
+            position: absolute;
+            bottom: 270px;
+            right: 1100px;
+            width: 150px;
+            height: 220px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            z-index: 2;
+        }
+
+        /* Styles pour les boutons */
+        .watchlist-button, .favoris-button {
+            display: inline-block;
+            margin-right: 10px;
+            margin-top: 10px;
+            padding: 8px 16px;
+            background-color: #333;
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .watchlist-button:hover, .favoris-button:hover {
+            background-color: #555;
+        }
     </style>
 </head>
 
@@ -35,10 +407,11 @@
         <div class="series-info">
             <h1 id="seriesTitle"></h1>
 
+            <h1 id="serieTitle"></h1>
+            <p><strong>Saisons :</strong> <span id="seasonCount"></span></p>
             <p><strong>Date de sortie :</strong> <span id="releaseDate"></span></p>
             <p><strong>Note :</strong> <span id="serieRating"></span> <span class="squares-outer"><span
                         class="squares-inner"></span></span></p>
-
             <div class="buttons-container">
                 <button class="button watchlist-button" id="addToWatchlistButton">Ajouter à la watchlist</button>
                 <button class="button favoris-button" id="addToFavorisButton">Ajouter aux favoris</button>
@@ -55,7 +428,7 @@
     <div class="serie-description">
         <p><strong>Description :</strong> <span id="serieDescription"></span></p>
     </div>
-
+    <div id="favorisContainer"></div>
     <div class="actors-container" id="actorsContainer">
         <!-- Les acteurs seront affichés ici -->
     </div>
