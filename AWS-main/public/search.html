@@ -290,57 +290,70 @@
     <div id="moviesList">
         <!-- Résultats de la recherche -->
     </div>
-
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const urlParams = new URLSearchParams(window.location.search);
             const query = urlParams.get("query");
-
+    
             if (query) {
                 document.getElementById('searchQuery').value = query;
-                searchMovies(query);
+                searchMedia(query);
             }
         });
-
+    
         document.getElementById('searchForm').addEventListener('submit', function (e) {
             e.preventDefault();
             const query = document.getElementById('searchQuery').value;
             window.location.href = `search.html?query=${encodeURIComponent(query)}`;
         });
-
-        async function searchMovies(query) {
-            const moviesList = document.getElementById("moviesList");
-            moviesList.innerHTML = '';
-
+    
+        async function searchMedia(query) {
+            const mediaList = document.getElementById("moviesList");
+            mediaList.innerHTML = '';
+    
             const API_KEY = "4a7fa7389e9a4ceeef5a953ff90232df";
-            const url = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}&language=fr-FR`;
-
+    
+            // URLs pour rechercher à la fois les films et les séries
+            const movieUrl = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}&language=fr-FR`;
+            const tvUrl = `https://api.themoviedb.org/3/search/tv?api_key=${API_KEY}&query=${encodeURIComponent(query)}&language=fr-FR`;
+    
             try {
-                const response = await fetch(url);
-                const data = await response.json();
-
-                if (!data.results || data.results.length === 0) {
-                    moviesList.innerHTML = '<p>Aucun résultat trouvé.</p>';
+                // Lancer les deux requêtes en parallèle
+                const [movieResponse, tvResponse] = await Promise.all([fetch(movieUrl), fetch(tvUrl)]);
+                const [movieData, tvData] = await Promise.all([movieResponse.json(), tvResponse.json()]);
+    
+                // Vérifier s'il y a des résultats
+                if ((!movieData.results || movieData.results.length === 0) && (!tvData.results || tvData.results.length === 0)) {
+                    mediaList.innerHTML = '<p>Aucun résultat trouvé.</p>';
                     return;
                 }
-
-                data.results.forEach(movie => {
-                    const movieElement = document.createElement("div");
-                    movieElement.classList.add("movie");
-
-                    movieElement.innerHTML = `
-                        <a href="film-details.html?id=${movie.id}">
-                            <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">
-                            <h3>${movie.title}</h3>
+    
+                // Fonction pour créer les éléments visuels des films/séries
+                function createMediaElement(item, type) {
+                    const mediaElement = document.createElement("div");
+                    mediaElement.classList.add("movie");
+    
+                    mediaElement.innerHTML = `
+                        <a href="${type}-details.html?id=${item.id}">
+                            <img src="${item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : 'https://via.placeholder.com/500x750?text=Pas+d%27image'}" alt="${item.title || item.name}">
+                            <h3>${item.title || item.name}</h3>
+                            <p class="media-type">${type === "film" ? "Film" : "Série"}</p>
                         </a>
                     `;
-
-                    moviesList.appendChild(movieElement);
-                });
+    
+                    mediaList.appendChild(mediaElement);
+                }
+    
+                // Ajouter les films trouvés
+                movieData.results.forEach(movie => createMediaElement(movie, "film"));
+    
+                // Ajouter les séries trouvées
+                tvData.results.forEach(tvShow => createMediaElement(tvShow, "serie"));
+    
             } catch (error) {
-                moviesList.innerHTML = `<p>Erreur lors de la recherche : ${error.message}</p>`;
+                mediaList.innerHTML = `<p>Erreur lors de la recherche : ${error.message}</p>`;
             }
         }
-    </script>
+    </script>    
 </body>
 </html>
