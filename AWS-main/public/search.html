@@ -348,7 +348,7 @@
                 movieData.results.forEach(movie => createMediaElement(movie, "film"));
     
                 // Ajouter les séries trouvées
-                tvData.results.forEach(tvShow => createMediaElement(tvShow, "serie"));
+                tvData.results.forEach(tvShow => createMediaElement(tvShow, "series"));
     
             } catch (error) {
                 mediaList.innerHTML = `<p>Erreur lors de la recherche : ${error.message}</p>`;
