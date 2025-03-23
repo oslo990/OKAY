@@ -402,7 +402,7 @@
 
     <div class="serie-header">
         <img id="seriesImage" src="" alt="Image de la série">
-        <img id="serieImage" alt="Image de la série">
+        <img id="additionalImage" class="additional-image" src="" alt="Affiche de la série">
 
         <div class="serie-info">
             <h1 id="seriesTitle"></h1>
@@ -415,11 +415,13 @@
             <div class="buttons-container">
                 <button class="button watchlist-button" id="addToWatchlistButton">Ajouter à la watchlist</button>
                 <button class="button favoris-button" id="addToFavorisButton">Ajouter aux favoris</button>
-            </div>
-            <button class="trailer-button" id="trailerButton">Regarder la bande-annonce</button>
-            
+                <button class="trailer-button" id="trailerButton">Regarder la bande-annonce</button>
+                <a href="favorisSeries.html" class="watchlist-button">favoris series</a>
+
                 <a href="watchlistSeries.html" class="watchlist-button">Watchlist de Séries</a>
             
+            </div>
+           
         </div>
         <button class="nav-arrow left" id="prevSeries">⬅</button>
         <button class="nav-arrow right" id="nextSeries">➡</button>
@@ -671,6 +673,8 @@
                 } catch (error) {
                     console.error("Erreur lors du chargement de la bande-annonce :", error);
                     trailerContainer.innerHTML = "<p>Erreur lors du chargement de la bande-annonce.</p>";
+                    trailerContainer.style.display = "block";
+
                 }
             }
 

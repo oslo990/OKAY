@@ -155,7 +155,7 @@ passport.use(new GoogleStrategy({
 
 // Sérialisation : stocker seulement l'ID dans la session
 passport.serializeUser((user, done) => {
-    console.log("🔄 Sérialisation de l'utilisateur :", user.id);
+    console.log(" Sérialisation de l'utilisateur :", user.id);
     done(null, user.id); // Stocke l'ID utilisateur dans la session
 });
 
@@ -164,13 +164,13 @@ passport.deserializeUser(async (id, done) => {
     try {
         const user = await prisma.user.findUnique({ where: { id } });
         if (!user) {
-            console.error("❌ Utilisateur non trouvé dans Prisma :", id);
+            console.error(" Utilisateur non trouvé dans Prisma :", id);
             return done(null, false); // Retourne `false` pour indiquer que l'utilisateur n'existe pas
         }
-        console.log("✅ Utilisateur désérialisé :", user);
+        console.log(" Utilisateur désérialisé :", user);
         done(null, user); // Associe l'utilisateur à la session
     } catch (error) {
-        console.error("❌ Erreur lors de la désérialisation :", error);
+        console.error(" Erreur lors de la désérialisation :", error);
         done(error, null);
     }
 });
@@ -229,6 +229,10 @@ app.post("/login", async (req, res) => { //req.login(user)
     if (!isMatch) {
         return res.status(400).json({ message: "Email ou mot de passe incorrect." });
     }
+
+    const { hashedPassword, ...userWithoutPassword } = user;
+
+res.status(200).json(userWithoutPassword);
 
 
     // Vérifiez si l'utilisateur a déjà une session existante
