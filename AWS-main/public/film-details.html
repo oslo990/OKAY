@@ -357,6 +357,31 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
             z-index: 2;
         }
+
+        .watchlist-buttonn {
+    display: flex;
+    align-items: center; /* Aligner l'icône et le texte */
+    gap: 8px; /* Espacement entre l'icône et le texte */
+    padding: 10px 15px;
+    background-color: #e50914; /* Rouge Netflix */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.watchlist-buttonn:hover {
+    background-color: #ff1a1a; /* Rouge plus clair au survol */
+}
+
+.watchlist-icon {
+    width: 20px; /* Taille de l'icône */
+    height: 20px;
+}
+
     </style>
 </head>
 
@@ -384,9 +409,18 @@
             <p><strong>Date de sortie :</strong> <span id="releaseDate"></span></p>
             <p><strong>Note :</strong> <span id="movieRating"></span> <span class="squares-outer"><span
                         class="squares-inner"></span></span></p>
-            <button class="watchlist-button" id="watchlistButton">Ajouter à la watchlist</button>
-            <button class="watchlist-button" id="addToFavoritesButton">Ajouter à favoris</button> <!-- Ajoutez cette ligne -->
+                        <button class="watchlist-buttonn" id="watchlistButton">
+                            <img src="images/bookmark.png" alt="Bookmark Icon" class="watchlist-icon">
+                            <span>Ajouter à la watchlist</span>
+                        </button>
+                        
 
+
+
+                        <button class="watchlist-buttonn" id="watchlistButton">
+                            <img src="images/favorie.png" alt="Bookmark Icon" class="watchlist-icon">
+                            <span>Favoris </span>
+                        </button>
             <!-- Ajoutez cette ligne -->
             <button id="showWatchlistButton" onclick="window.location.href='watchlist.html'">Afficher la
                 Watchlist</button>
