@@ -8,11 +8,10 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800,900&display=swap">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.5.1/css/all.css">
     <link rel="stylesheet" href="style_login.css">
-    <script src="https://www.google.com/recaptcha/enterprise.js?render=6Ldtr_cqAAAAAAx4qjM33hgWsO0ahqhkl6NUqcwj"></script>
-
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>  <!-- reCAPTCHA v2 -->
+    
     <script>
-        const BASE_URL = "https://okay-fawn.vercel.app"
-        // Mise à jour du lien Google OAuth avec la bonne URL
+        const BASE_URL = "https://okay-fawn.vercel.app";
         document.addEventListener('DOMContentLoaded', function() {
             document.querySelector('.google-loginn a').setAttribute('href', `${BASE_URL}/auth/google`);
         });
@@ -37,11 +36,14 @@
                 <form id="loginForm">
                     <input type="email" id="email" placeholder="Entrez votre email" required>
                     <input type="password" id="password" placeholder="Entrez votre mot de passe" required>
+
+                    <!-- Ajout du reCAPTCHA v2 -->
+                    <div class="g-recaptcha" data-sitekey="6Lc9z_0qAAAAAEhZOgPyYZJCIRAC9CmCDvI1YeIq"></div>
+
                     <input type="submit" value="Se connecter">
 
                     <div class="group">
                         <a href="forgot-password.html">Mot de passe oublié ?</a>
-                        <td></td>
                         <a href="register.html">Inscription</a>
                     </div>
 
@@ -64,18 +66,18 @@
             const email = document.getElementById("email").value;
             const password = document.getElementById("password").value;
 
-            // Attendez le token reCAPTCHA
-            const token = await grecaptcha.enterprise.execute('6Ldtr_cqAAAAAAx4qjM33hgWsO0ahqhkl6NUqcwj', { action: 'LOGIN' });
+            // Obtenez le token reCAPTCHA
+            const token = document.querySelector(".g-recaptcha-response").value;
+            if (!token) {
+                alert("Veuillez valider le reCAPTCHA !");
+                return;
+            }
 
             // Préparez les données à envoyer au serveur
             const recaptchaData = {
-                event: {
-                    token: token,                 // Le token reCAPTCHA
-                    expectedAction: 'LOGIN',      // Action attendue (exemple : LOGIN)
-                    siteKey: '6Ldtr_cqAAAAAAx4qjM33hgWsO0ahqhkl6NUqcwj'  // La clé du site
-                },
-                email,                          // L'email de l'utilisateur
-                password,                       // Le mot de passe de l'utilisateur
+                recaptchaToken: token,  // Le token reCAPTCHA
+                email,                  // L'email de l'utilisateur
+                password,               // Le mot de passe de l'utilisateur
             };
 
             // Envoi des données de connexion avec le token reCAPTCHA
