@@ -15,8 +15,6 @@ import cookieParser from 'cookie-parser';
 import nodemailer from 'nodemailer';
 import crypto from 'crypto';
 
-  
-
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -32,7 +30,8 @@ const prisma = new PrismaClient();
 
 
 
-// 📌 Connexion à MongoDB
+
+//   Connexion à MongoDB
 mongoose.connect(process.env.DATABASE_URL)
     .then(() => {
         console.log("✅ Connecté à MongoDB");
@@ -42,11 +41,11 @@ mongoose.connect(process.env.DATABASE_URL)
         process.exit(1); // Quitter proprement si la connexion échoue
     });
 
-// 📌 Utiliser cookie-parser
+//   Utiliser cookie-parser
 app.use(cookieParser());
 
 
-// 📌 Configuration des sessions et de Passport
+//   Configuration des sessions et de Passport
 app.use(session({
     secret: process.env.SESSION_SECRET || "monsecret",
     resave: false,
@@ -68,14 +67,14 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
-// 📌 Middleware pour vérifier les cookies de session
+//   Middleware pour vérifier les cookies de session
 app.use((req, res, next) => {
     console.log("Cookies de session :", req.cookies);
     next();
 });
 
 
-// 📌 Middleware pour associer la session à l'utilisateur
+//   Middleware pour associer la session à l'utilisateur
 app.use(async (req, res, next) => {
     if (req.user) {
         const sessionExists = await mongoose.connection.db.collection('sessions').findOne({ "session.userId": req.user.id });
@@ -89,12 +88,12 @@ app.use(async (req, res, next) => {
 });
 
 
-// 📌 Middleware
+//   Middleware
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
 
-// 📌 Middleware pour rediriger les utilisateurs authentifiés
+//   Middleware pour rediriger les utilisateurs authentifiés
 const redirectIfAuthenticated = (req, res, next) => {
     if (req.isAuthenticated()) {
         return res.redirect("/accueil_after_login.html");
@@ -103,7 +102,7 @@ const redirectIfAuthenticated = (req, res, next) => {
 };
 
 
-/// 📌 Configuration de Google OAuth avec Passport.js
+///   Configuration de Google OAuth avec Passport.js
 
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
@@ -155,7 +154,7 @@ passport.use(new GoogleStrategy({
 
 // Sérialisation : stocker seulement l'ID dans la session
 passport.serializeUser((user, done) => {
-    console.log(" Sérialisation de l'utilisateur :", user.id);
+    console.log("🔄 Sérialisation de l'utilisateur :", user.id);
     done(null, user.id); // Stocke l'ID utilisateur dans la session
 });
 
@@ -164,44 +163,44 @@ passport.deserializeUser(async (id, done) => {
     try {
         const user = await prisma.user.findUnique({ where: { id } });
         if (!user) {
-            console.error(" Utilisateur non trouvé dans Prisma :", id);
+            console.error("❌ Utilisateur non trouvé dans Prisma :", id);
             return done(null, false); // Retourne `false` pour indiquer que l'utilisateur n'existe pas
         }
-        console.log(" Utilisateur désérialisé :", user);
+        console.log("✅ Utilisateur désérialisé :", user);
         done(null, user); // Associe l'utilisateur à la session
     } catch (error) {
-        console.error(" Erreur lors de la désérialisation :", error);
+        console.error("❌ Erreur lors de la désérialisation :", error);
         done(error, null);
     }
 });
 
 
-// 📌 Routes de gestion des pages HTML
+//   Routes de gestion des pages HTML
 app.get("/login", redirectIfAuthenticated, (req, res) => res.sendFile(path.join(__dirname, "public", "login.html")));
 app.get("/accueil", (req, res) => res.sendFile(path.join(__dirname, "public", "accueil.html")));
 app.get("/register", (req, res) => res.sendFile(path.join(__dirname, "public", "register.html")));
 
 
-// 📌 Routes d'inscription et de connexion
+//   Routes d'inscription et de connexion
 app.post("/register", async (req, res) => {
     const { name, email, password } = req.body;
 
 
-    // 📌 Vérification du mot de passe sécurisé
+    //   Vérification du mot de passe sécurisé
     const passwordError = validatePassword(password);
     if (passwordError) {
         return res.status(400).json({ message: passwordError });
     }
 
 
-    // 📌 Vérifier si l'utilisateur existe déjà
+    //   Vérifier si l'utilisateur existe déjà
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
         return res.status(400).json({ message: "Cet utilisateur existe déjà." });
     }
 
 
-    // 📌 Hachage du mot de passe sécurisé
+    //   Hachage du mot de passe sécurisé
     const hashedPassword = await bcrypt.hash(password, 10);
 
 
@@ -215,73 +214,70 @@ app.post("/register", async (req, res) => {
 });
 
 
-app.post("/login", async (req, res) => { // req.login(user)
+app.post("/login", async (req, res) => { //req.login(user)
     const { email, password } = req.body;
 
-    try {
-        // 📌 Récupérer l'utilisateur en base de données
-        const user = await prisma.user.findUnique({ where: { email } });
-        if (!user) {
-            return res.status(400).json({ message: "Email ou mot de passe incorrect." });
-        }
 
-        // 📌 Vérifier le mot de passe
-        const isMatch = await bcrypt.compare(password, user.hashedPassword);
-        if (!isMatch) {
-            return res.status(400).json({ message: "Email ou mot de passe incorrect." });
-        }
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) {
+        return res.status(400).json({ message: "Email ou mot de passe incorrect." });
+    }
 
-        // 📌 Vérifiez si l'utilisateur a déjà une session existante
-        const existingSession = await mongoose.connection.collection('sessions').findOne({ "session.passport.user": user.id });
 
-        if (existingSession) {
-            req.sessionID = existingSession._id;
-            req.sessionStore.get(req.sessionID, (err, session) => {
-                if (err) {
-                    return res.status(500).json({ message: "Erreur lors de la récupération de la session." });
-                }
-                req.session = session;
+    const isMatch = await bcrypt.compare(password, user.hashedPassword);
+    if (!isMatch) {
+        return res.status(400).json({ message: "Email ou mot de passe incorrect." });
+    }
 
-                // ✅ Ne stocke pas hashedPassword en session
-                const { hashedPassword, ...userWithoutPassword } = user;
 
-                req.login(userWithoutPassword, (err) => {
-                    if (err) {
-                        return res.status(500).json({ message: "Erreur lors de la connexion." });
-                    }
-                    console.log("Session existante réutilisée pour l'utilisateur :", user.email);
-                    res.json({ message: "Connexion réussie !" });
-                });
-            });
-        } else {
-            // ✅ Ne stocke pas hashedPassword en session
-            const { hashedPassword, ...userWithoutPassword } = user;
-
-            req.login(userWithoutPassword, (err) => {
+    // Vérifiez si l'utilisateur a déjà une session existante
+    const existingSession = await mongoose.connection.collection('sessions').findOne({ "session.passport.user": user.id });
+    if (existingSession) {
+        req.sessionID = existingSession._id;
+        req.sessionStore.get(req.sessionID, (err, session) => {
+            if (err) {
+                return res.status(500).json({ message: "Erreur lors de la récupération de la session." });
+            }
+            req.session = session;
+            req.login(user, (err) => {
                 if (err) {
                     return res.status(500).json({ message: "Erreur lors de la connexion." });
                 }
-
-                req.session.message = `Bienvenue ${user.name} !`; 
-                console.log("Message dans la session après ajout :", req.session.message);
-
-                console.log("Nouvelle session créée pour l'utilisateur :", user.email);
+                console.log("Session existante réutilisée pour l'utilisateur :", user.email);
                 res.json({ message: "Connexion réussie !" });
             });
-        }
-    } catch (error) {
-        console.error("❌ Erreur lors du login :", error);
-        res.status(500).json({ message: "Erreur interne du serveur." });
+        });
+    } else {
+        req.login(user, (err) => {
+            if (err) {
+                return res.status(500).json({ message: "Erreur lors de la connexion." });
+            }
+
+
+
+
+            req.session.message = `Bienvenue ${user.name} !`; // 🔹 Ajoute un message en session
+            console.log("Message dans la session après ajout :", req.session.message);
+
+
+
+
+
+
+
+            console.log("Nouvelle session créée pour l'utilisateur :", user.email);
+            res.json({ message: "Connexion réussie !" });
+        });
     }
 });
-
 
 
 app.get("/profile", (req, res) => {
     if (!req.isAuthenticated()) {
         return res.status(401).json({ message: "Non authentifié" });
     }
-    res.json(req.user);
+    const { id, name, email, googleId, emailVerified, createdAt, updatedAt, favoriteIds, resetPasswordToken, resetPasswordExpires } = req.user
+    res.json({ id, name, email, googleId, emailVerified, createdAt, updatedAt, favoriteIds, resetPasswordToken, resetPasswordExpires });
 });
 
 
@@ -343,11 +339,13 @@ app.get("/api/current", (req, res) => {
         console.log("L'utilisateur n'est pas authentifié.");
         return res.status(401).json({ message: "Non authentifié" });
     }
+    const { id, name, email, googleId, emailVerified, createdAt, updatedAt, favoriteIds, resetPasswordToken, resetPasswordExpires } = req.user
     console.log("Utilisateur authentifié :", req.user);
     console.log("Message dans la session :", req.session.message); // Vérifie si le message est présent dans la session
 
-    res.json(req.user);
+    res.json({ id, name, email, googleId, emailVerified, createdAt, updatedAt, favoriteIds, resetPasswordToken, resetPasswordExpires });
 });
+
 
 
 
@@ -430,7 +428,7 @@ app.post("/watchlist", ensureAuthenticated, async (req, res) => {
         const tmdbMovie = tmdbResponse.data;
 
 
-        // Vérifier si le film existe sur TMDb
+        // Vérifier si le film existe sur TMDB
         if (!tmdbMovie) {
             return res.status(404).json({ message: "Film non trouvé sur TMDb" });
         }
@@ -711,8 +709,8 @@ app.post("/forgot-password", async (req, res) => {
 const expirationTime = new Date();
 expirationTime.setHours(expirationTime.getHours() + 1); // Expiration dans 1h
 
-console.log("📌 Token généré :", token);
-console.log("📌 Expire à :", expirationTime);
+console.log("  Token généré :", token);
+console.log("  Expire à :", expirationTime);
 
     // Sauvegarder le token dans la base de données
     await prisma.user.update({
@@ -764,7 +762,7 @@ console.log("📌 Expire à :", expirationTime);
 app.post("/reset-password", async (req, res) => {
     const { token, password } = req.body;
     
-    console.log("📌 Token reçu du client :", token);
+    console.log("  Token reçu du client :", token);
 
     const user = await prisma.user.findFirst({
         where: {
@@ -817,7 +815,7 @@ app.get("/reset-password", (req, res) => {
 });
 
 
-// 📌 Middleware pour vérifier le token JWT
+//   Middleware pour vérifier le token JWT
 const verifyToken = (req, res, next) => {
     const token = req.headers["authorization"];
 
@@ -966,7 +964,7 @@ app.get("/favorisSeries", ensureAuthenticated, async (req, res) => {
     }
 });
 
-// 📌 Ajouter un film aux favoris
+//   Ajouter un film aux favoris
 app.post("/favoris", ensureAuthenticated, async (req, res) => {
     let { movieId } = req.body;
     const userId = req.user.id;
@@ -1025,7 +1023,7 @@ app.post("/favoris", ensureAuthenticated, async (req, res) => {
     }
 });
 
-// 📌 Récupérer la liste des films favoris
+//   Récupérer la liste des films favoris
 app.get("/favoris", ensureAuthenticated, async (req, res) => {
     const userId = req.user.id;
 
@@ -1052,7 +1050,7 @@ app.get("/favoris", ensureAuthenticated, async (req, res) => {
     }
 });
 
-// 📌 Supprimer un film des favoris
+//   Supprimer un film des favoris
 app.delete("/favoris", ensureAuthenticated, async (req, res) => {
     const { movieId } = req.body;
     const userId = req.user.id;
