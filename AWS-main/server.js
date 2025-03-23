@@ -215,64 +215,66 @@ app.post("/register", async (req, res) => {
 });
 
 
-app.post("/login", async (req, res) => { //req.login(user)
+app.post("/login", async (req, res) => { // req.login(user)
     const { email, password } = req.body;
 
+    try {
+        // 📌 Récupérer l'utilisateur en base de données
+        const user = await prisma.user.findUnique({ where: { email } });
+        if (!user) {
+            return res.status(400).json({ message: "Email ou mot de passe incorrect." });
+        }
 
-    const user = await prisma.user.findUnique({ where: { email } });
-    if (!user) {
-        return res.status(400).json({ message: "Email ou mot de passe incorrect." });
-    }
+        // 📌 Vérifier le mot de passe
+        const isMatch = await bcrypt.compare(password, user.hashedPassword);
+        if (!isMatch) {
+            return res.status(400).json({ message: "Email ou mot de passe incorrect." });
+        }
 
+        // 📌 Vérifiez si l'utilisateur a déjà une session existante
+        const existingSession = await mongoose.connection.collection('sessions').findOne({ "session.passport.user": user.id });
 
-    const isMatch = await bcrypt.compare(password, user.hashedPassword);
-    if (!isMatch) {
-        return res.status(400).json({ message: "Email ou mot de passe incorrect." });
-    }
+        if (existingSession) {
+            req.sessionID = existingSession._id;
+            req.sessionStore.get(req.sessionID, (err, session) => {
+                if (err) {
+                    return res.status(500).json({ message: "Erreur lors de la récupération de la session." });
+                }
+                req.session = session;
 
+                // ✅ Ne stocke pas hashedPassword en session
+                const { hashedPassword, ...userWithoutPassword } = user;
 
+                req.login(userWithoutPassword, (err) => {
+                    if (err) {
+                        return res.status(500).json({ message: "Erreur lors de la connexion." });
+                    }
+                    console.log("Session existante réutilisée pour l'utilisateur :", user.email);
+                    res.json({ message: "Connexion réussie !" });
+                });
+            });
+        } else {
+            // ✅ Ne stocke pas hashedPassword en session
+            const { hashedPassword, ...userWithoutPassword } = user;
 
-
-    // Vérifiez si l'utilisateur a déjà une session existante
-    const existingSession = await mongoose.connection.collection('sessions').findOne({ "session.passport.user": user.id });
-    if (existingSession) {
-        req.sessionID = existingSession._id;
-        req.sessionStore.get(req.sessionID, (err, session) => {
-            if (err) {
-                return res.status(500).json({ message: "Erreur lors de la récupération de la session." });
-            }
-            req.session = session;
-            req.login(user, (err) => {
+            req.login(userWithoutPassword, (err) => {
                 if (err) {
                     return res.status(500).json({ message: "Erreur lors de la connexion." });
                 }
-                console.log("Session existante réutilisée pour l'utilisateur :", user.email);
+
+                req.session.message = `Bienvenue ${user.name} !`; 
+                console.log("Message dans la session après ajout :", req.session.message);
+
+                console.log("Nouvelle session créée pour l'utilisateur :", user.email);
                 res.json({ message: "Connexion réussie !" });
             });
-        });
-    } else {
-        req.login(user, (err) => {
-            if (err) {
-                return res.status(500).json({ message: "Erreur lors de la connexion." });
-            }
-
-
-
-
-            req.session.message = `Bienvenue ${user.name} !`; // 🔹 Ajoute un message en session
-            console.log("Message dans la session après ajout :", req.session.message);
-
-
-
-
-
-
-
-            console.log("Nouvelle session créée pour l'utilisateur :", user.email);
-            res.json({ message: "Connexion réussie !" });
-        });
+        }
+    } catch (error) {
+        console.error("❌ Erreur lors du login :", error);
+        res.status(500).json({ message: "Erreur interne du serveur." });
     }
 });
+
 
 
 app.get("/profile", (req, res) => {
