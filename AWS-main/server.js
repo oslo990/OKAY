@@ -730,7 +730,7 @@ console.log("  Expire à :", expirationTime);
         },
     });
 
-    const BASE_URL = process.env.BASE_URL || `http://localhost:5001`;
+    const BASE_URL = process.env.BASE_URL || 'https://okay-fawn.vercel.app';
     const resetLink = `${BASE_URL}/reset-password?token=${token}`;
     
 
